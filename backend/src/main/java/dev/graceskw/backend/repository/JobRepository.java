@@ -1,9 +1,11 @@
 package dev.graceskw.backend.repository;
 
-import dev.graceskw.backend.entity.JobEntity;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import dev.graceskw.backend.entity.JobEntity;
 
 public interface JobRepository extends JpaRepository<JobEntity, Long> {
     List<JobEntity> findAllByCompanyNameIgnoreCase(String companyName);
@@ -12,7 +14,9 @@ public interface JobRepository extends JpaRepository<JobEntity, Long> {
 
     List<JobEntity> findAllByStatus(String status);
 
-    List<JobEntity> findAllByDeadlineBefore(java.time.DateTime deadline);
+    List<JobEntity> findAllByDeadlineBefore(java.time.LocalDateTime deadline);
 
-    List<JobEntity> findByJobID(Long id);
+    // Optional: return Optional object regardless of whether the entity is found
+    // to avoid null pointer exceptions
+    Optional<JobEntity> findByid(Long id);
 }

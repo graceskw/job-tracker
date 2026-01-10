@@ -1,0 +1,38 @@
+package dev.graceskw.backend.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dev.graceskw.backend.dto.JobRequestDTO;
+import dev.graceskw.backend.entity.JobEntity;
+import dev.graceskw.backend.repository.JobRepository;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class JobService {
+    @Autowired
+    private JobRepository jobRepository;
+
+    public JobEntity saveJob(JobRequestDTO jobRequest) {
+        JobEntity savedJob = new JobEntity();
+        savedJob.setJobPosition(jobRequest.getJobPosition());
+        savedJob.setCompanyName(jobRequest.getCompanyName());
+        savedJob.setDeadline(java.time.LocalDateTime.parse(jobRequest.getDeadline()));
+        savedJob.setJobURL(jobRequest.getJobURL());
+        savedJob.setJobDescription(jobRequest.getJobDescription());
+
+        jobRepository.save(savedJob);
+        log.info("Job created successfully with ID: {}", savedJob.getId());
+        return savedJob;
+    }
+
+    public JobEntity getJobById(Long id) {
+        // Optional<JobEntity> jobOpt = jobRepository.findByid(id);
+        // if (!jobOpt.isPresent()) {
+        //     log.error("Job not found with ID: {}", id);
+        //     return null;
+        // }
+        return jobRepository.findByid(id).orElse(null);
+    }
+}
