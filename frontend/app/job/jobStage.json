@@ -1,0 +1,19 @@
+{
+    "cathay":
+        [
+            {
+                "stage": "Aptitude Test",
+                "done": "yes",
+                "deadline": "2024-07-10",
+                "dateCompleted": "2024-07-05",
+                "notes": "Completed online test"
+            },
+            {
+                "stage": "Application",
+                "done": "yes",
+                "deadline": "2024-06-30",
+                "dateCompleted": "2024-06-15",
+                "notes": "Submitted application form"
+            }
+        ]
+}
