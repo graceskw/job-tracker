@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,8 +59,52 @@ public class JobController {
 
         JobEntity job = jobService.getJobById(id);
         
+        // return 404 if job not found
+        if (job == null) {
+            log.error("Job not found with ID: {}", id);
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(job);
     }
 
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<Void> deleteJobById(@PathVariable Long id) {
+        if(id == null || id <= 0) {
+            log.error("Invalid job ID: {}", id);
+            return ResponseEntity.badRequest().build();
+        }
+
+        jobService.deleteJobById(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    // @PostMapping("/updateJobStatus/")
+    // @Transactional
+    // public ResponseEntity<JobEntity> updateJobStatus(@Valid @RequestBody JobStatusDTO jobStatus) {
+    //     if (jobStatus == null || jobStatus.getJobID() == null || jobStatus.getStatus() == null) {
+    //         log.error("Invalid job status update request");
+    //         return ResponseEntity.badRequest().build();
+    //     }
+
+    //     if (jobRepository.findByJobID(jobStatus.getJobID()).isEmpty()) {
+    //         log.error("Job with ID {} not found", jobStatus.getJobID());
+    //         return ResponseEntity.notFound().build();
+    //     }
+
+    //     if (jobStatus.getStatus() == "") {
+    //         log.error("Status cannot be empty");
+    //         return ResponseEntity.badRequest().build();
+    //     } else if (jobStatus.getStatus() ) {
+    //         JobEntity jobToUpdate = jobRepository.findByJobID(jobStatus.getJobID()).get(0);
+    //         jobToUpdate.setStatus(jobStatus.getStatus());
+    //         JobEntity updatedJob = jobRepository.save(jobToUpdate);
+    //         log.info("Job status updated successfully for ID: {}", updatedJob.getId());
+    //         return ResponseEntity.ok(updatedJob);
+    //     } else {
+    //         log.error("Invalid status value: {}", jobStatus.getStatus());
+    //         return ResponseEntity.badRequest().build();
+    //     }
 
 }
