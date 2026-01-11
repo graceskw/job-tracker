@@ -25,7 +25,7 @@ public class JobService {
         savedJob.setJobDescription(jobRequest.getJobDescription());
 
         jobRepository.save(savedJob);
-        log.info("Job created successfully with ID: {}", savedJob.getId());
+        log.info("Job created successfully with ID: {}", savedJob.getJobId());
         return savedJob;
     }
 
@@ -35,7 +35,7 @@ public class JobService {
         //     log.error("Job not found with ID: {}", id);
         //     return null;
         // }
-        return jobRepository.findByid(id).orElse(null);
+        return jobRepository.findByJobId(id).orElse(null);
     }
 
     public void deleteJobById(Long id) {

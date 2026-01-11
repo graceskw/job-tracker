@@ -1,9 +1,11 @@
 package dev.graceskw.backend.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 
+import dev.graceskw.backend.enums.JobStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,7 +24,7 @@ import lombok.Data;
 public class JobEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long jobId;
 
     @Column(nullable = false)
     private String jobPosition;
@@ -41,7 +43,7 @@ public class JobEntity {
     private String jobURL;
 
     @Column
-    private String status;
+    private JobStatus jobStatus;
 
     @Column
     private String jobDescription;
@@ -49,6 +51,8 @@ public class JobEntity {
     @Column
     private String notes;
 
+    @Column
+    private LocalDateTime dateApplied;
     public JobEntity() {
     }
 }

@@ -1,6 +1,6 @@
 package dev.graceskw.backend.enums;
 
-public enum ApplicationStatus {
+public enum JobStatus {
     INTERESTED,
     APPLIED,
     DO_ONLINE_TEST,
