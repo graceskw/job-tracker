@@ -1,10 +1,13 @@
 package dev.graceskw.backend.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 
 import dev.graceskw.backend.enums.CompletionStatus;
+import dev.graceskw.backend.enums.OnlineTestType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -29,7 +32,7 @@ public class OnlineTestEntity {
     private Long onlineTestId;
 
     @ManyToOne
-    @JoinColumn(name="jobId")
+    @JoinColumn(name="jobId", nullable=false)
     private JobEntity job;
 
     @Column (nullable = false)
@@ -44,12 +47,16 @@ public class OnlineTestEntity {
     @Column
     private String notes;
 
+    // TODO: fix createdAt not being set automatically
     @Column(updatable= false)
     @CreatedDate
     private LocalDateTime createdAt;
 
     @Column
     private CompletionStatus onlineTestStatus;
+
+    @Column (nullable = false)
+    private List<OnlineTestType> onlineTestTypes;               
 
     public OnlineTestEntity() {
     }
