@@ -23,12 +23,9 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-import jobList from "./jobList.json"
-import stageInfo from "./jobStage.json"
 import { useEffect, useState } from "react"
 import axios, { all, AxiosResponse } from 'axios';
-import { serialize } from "v8"
-import { get } from "http"
+import { Job } from "@/components/job"
 
 // tell axios what type of data to expect back
 const fetchUser = async (id: number): Promise<Job> => {
@@ -65,6 +62,7 @@ export default function ResizableHandleDemo() {
         axios.get<Job[]>(`http://localhost:8080/api/jobs/allJobs`)
         .then(response => {
             setAllJobs(response.data);
+            // alert('All jobs data: ' + JSON.stringify(response.data));
         })
         .catch(error => {
             alert('Error fetching all jobs data: ' + error.message);
@@ -109,23 +107,25 @@ export default function ResizableHandleDemo() {
                         </button> */}
 
                     {/* <span className="font-semibold">job list</span> */}
+                    <span
+                        onClick={getAllJobs}
+                    >🔄</span>
                     <table>
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Company</TableHead>
-                                <span
-                                    onClick={getAllJobs}
-                                >🔄</span>
+                                
                                 {/* <TableHead>Position</TableHead>
                                 <TableHead className="text-right">Status</TableHead> */}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {Object.values(allJobs).map((job) => (
-                            <TableRow key={job.companyName}>
+                            <TableRow key={job.jobId}>
                                 <TableCell className="font-medium"
                                     onClick={() => {
                                         setJobData(job);
+                                        // alert('Job data: ' + JSON.stringify(job));
                                     }}
                                 >{job.companyName}</TableCell>
                                 {/* <TableCell>{job.position}</TableCell>
@@ -146,14 +146,14 @@ export default function ResizableHandleDemo() {
                         <div className="max-w-md">
                             <h2 className="mb-4 text-2xl font-bold">{jobData?.companyName}</h2>
                             {/* <h2 className="mb-4 text-2xl font-bold">{jobList.cathay.company}</h2> */}
-                            <a href={jobList.cathay.url} className="mb-4 text-lg font-medium text-blue-600 hover:underline">
+                            <a href={jobData?.jobURL} className="mb-4 text-lg font-medium text-blue-600 hover:underline">
                                 {jobData?.jobPosition}
                             </a>
                             {/* ? == if not null sin access */}
                         </div>
                         
                         <button className="mb-2x inline-block rounded-lg bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 max-h-10 hover:bg-green-200">
-                            {jobData?.status}
+                            {jobData?.jobStatus}
                         </button>
                     </div>
 
@@ -182,18 +182,18 @@ export default function ResizableHandleDemo() {
                                         <TableHead className="w-[100px]">Done?</TableHead>
                                         <TableHead>Stage</TableHead>
                                         <TableHead className="text-red-600">Deadline</TableHead>
-                                        <TableHead>Date completed</TableHead>
-                                        <TableHead className="text-right">Notes</TableHead>
+                                        {/* <TableHead>Date completed</TableHead>
+                                        <TableHead className="text-right">Notes</TableHead> */}
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {stageInfo.cathay.map((stage) => (
-                                        <TableRow key={stage.stage}>
-                                            <TableCell className="font-medium">{stage.done}</TableCell>
-                                            <TableCell>{stage.stage}</TableCell>
-                                            <TableCell className="text-red-600">{stage.deadline}</TableCell>
-                                            <TableCell className="text-right">{stage.dateCompleted}</TableCell>
-                                            <TableCell className="text-right">{stage.notes}</TableCell>
+                                        {jobData?.onlineTests.map((stage) => (
+                                        <TableRow key={stage.onlineTestId}>
+                                            <TableCell>{stage.onlineTestStatus}</TableCell>
+                                            <TableCell className="font-medium">{stage.onlineTestTypes.join(", ")}</TableCell>
+                                            <TableCell className="text-red-600">{stage.deadline?.toString()}</TableCell>
+                                            {/* <TableCell className="text-right">{stage.dateCompleted?.toString()}</TableCell>
+                                            <TableCell className="text-right">{stage.notes}</TableCell> */}
                                         </TableRow>
                                         ))}
                                     </TableBody>
