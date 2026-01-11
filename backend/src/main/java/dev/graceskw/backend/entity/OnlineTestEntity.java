@@ -13,6 +13,8 @@ import dev.graceskw.backend.enums.OnlineTestType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.GeneratedValue;
@@ -57,6 +59,7 @@ public class OnlineTestEntity {
     private LocalDateTime createdAt;
 
     @Column
+    @Enumerated(EnumType.STRING) // specify that the enum should be stored as a string
     private CompletionStatus onlineTestStatus;
 
     @Column (nullable = false)

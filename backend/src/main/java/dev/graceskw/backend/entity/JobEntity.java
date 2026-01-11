@@ -12,6 +12,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,6 +43,7 @@ public class JobEntity {
     @Column (nullable = false)
     private LocalDateTime deadline;
 
+    // TODO: fix createdAt not being set automatically
     @Column(updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
@@ -49,6 +52,7 @@ public class JobEntity {
     private String jobURL;
 
     @Column
+    @Enumerated(EnumType.STRING) // specify that the enum should be stored as a string
     private JobStatus jobStatus;
 
     @Column
