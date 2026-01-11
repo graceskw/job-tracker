@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+
 import dev.graceskw.backend.enums.JobStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,6 +25,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
+@JsonIdentityInfo(generator = com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator.class, property = "jobId") // to prevent infinite recursion in bidirectional relationships
 @Table(name = "jobs")
 public class JobEntity {
     @Id

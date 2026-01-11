@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import dev.graceskw.backend.enums.CompletionStatus;
 import dev.graceskw.backend.enums.OnlineTestType;
 
@@ -25,6 +28,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "onlineTestId") // to prevent infinite recursion in bidirectional relationships
 @Table(name = "onlineTest")
 public class OnlineTestEntity {
     @Id
