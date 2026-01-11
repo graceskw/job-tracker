@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import dev.graceskw.backend.enums.JobStatus;
 import jakarta.persistence.CascadeType;
@@ -27,7 +28,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-@JsonIdentityInfo(generator = com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator.class, property = "jobId") // to prevent infinite recursion in bidirectional relationships
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "jobId") // to prevent infinite recursion in bidirectional relationships
 @Table(name = "jobs")
 public class JobEntity {
     @Id
@@ -65,7 +66,7 @@ public class JobEntity {
     private LocalDateTime dateApplied;
 
     @Column
-    @OneToMany(mappedBy="onlineTestId", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="job", cascade=CascadeType.ALL)
     private List<OnlineTestEntity> onlineTests;
 
     public JobEntity() {
