@@ -6,11 +6,14 @@ import java.util.List;
 import org.springframework.data.annotation.CreatedDate;
 
 import dev.graceskw.backend.enums.JobStatus;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,6 +56,11 @@ public class JobEntity {
 
     @Column
     private LocalDateTime dateApplied;
+
+    @Column
+    @OneToMany(mappedBy="onlineTestId", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    private List<OnlineTestEntity> onlineTests;
+
     public JobEntity() {
     }
 }
