@@ -1,5 +1,7 @@
 package dev.graceskw.backend.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,8 @@ import dev.graceskw.backend.service.JobService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -79,6 +83,14 @@ public class JobController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/allJobs")
+    public List<JobEntity> getAllJobs() {
+        List<JobEntity> jobs = jobService.getAllJobs();
+
+        return jobs;
+    }
+    
 
     // @PostMapping("/updateJobStatus/")
     // @Transactional

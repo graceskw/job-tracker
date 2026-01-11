@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import dev.graceskw.backend.entity.JobEntity;
 
 public interface JobRepository extends JpaRepository<JobEntity, Long> {
+    List<JobEntity> findAll();
+
     List<JobEntity> findAllByCompanyNameIgnoreCase(String companyName);
 
     List<JobEntity> findAllByJobPositionIgnoreCase(String jobPosition);
