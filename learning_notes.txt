@@ -49,3 +49,10 @@ javascript: toLocaleDateString -> with timezone
 	eg 2025-12-10T15:32:59.766Z
 java: LocalDateTime -> withOUT timezone 
 	eg 2025-12-10T15:32:59.766
+
+
+TO HIDE/SHOW INFO 
+	<Activity mode={jobData ? "visible" : "hidden"}>
+
+open new page <a>
+	target="_blank"

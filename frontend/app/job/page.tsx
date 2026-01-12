@@ -224,6 +224,7 @@ export default function jobPage() {
                   {/* <h2 className="mb-4 text-2xl font-bold">{jobList.cathay.company}</h2> */}
                   <a
                     href={jobData?.jobURL}
+					target="_blank"
                     className="mb-4 text-lg font-medium text-blue-600 hover:underline"
                   >
                     {jobData?.jobPosition}
