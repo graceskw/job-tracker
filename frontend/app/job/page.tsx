@@ -88,6 +88,7 @@ export default function jobPage() {
         getAllJobs();
     }, [])
 
+    const [openSaveJob, setOpenSaveJob] = useState(false)
     const [openUpdateJob, setOpenUpdateJob] = useState(false)
 
     // const isDesktop = useMediaQuery("(min-width: 768px)")
@@ -110,19 +111,31 @@ export default function jobPage() {
 
 
 
-							{/* <Dialog open={openUpdateJob} onOpenChange={setOpenUpdateJob}>
+							<Dialog open={openSaveJob} onOpenChange={setOpenSaveJob}>
 								<DialogTrigger asChild>
-									<Button>
-										<Plus className="size-4" />
-									</Button>								
+								<Button><Plus /></Button>
 								</DialogTrigger>
 								<DialogContent className="sm:max-w-[425px]">
-									<DialogHeader>
-										<DialogTitle>Edit Job Info</DialogTitle>
-									</DialogHeader>
-									<JobUpdateForm jobId={jobData?.jobId} />
+								<DialogHeader>
+									<DialogTitle>Save Job</DialogTitle>
+
+								</DialogHeader>
+								<JobUpdateForm 
+									job={jobData} 
+									onSuccess={() => {
+										setOpenSaveJob(false);
+										getAllJobs();
+										if (jobData?.jobId) {
+											axios.get<Job>(`http://localhost:8080/api/jobs/${jobData.jobId}`)
+												.then(response => setJobData(response.data))
+												.catch(error => console.error('Error refetching job:', error));
+										}
+									}}
+									submitType="saveJob"
+								/>
+								{/* <JobUpdateForm jobId={jobData?.jobId} /> */}
 								</DialogContent>
-								</Dialog> */}
+							</Dialog>
 							
 						</div>
 
@@ -188,6 +201,7 @@ export default function jobPage() {
 											.catch(error => console.error('Error refetching job:', error));
 									}
 								}}
+								submitType="updateJob"
 							/>
 							{/* <JobUpdateForm jobId={jobData?.jobId} /> */}
 							</DialogContent>

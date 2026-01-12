@@ -6,12 +6,6 @@ import { Calendar } from "./ui/calendar"
 import { ChevronDownIcon } from "lucide-react"
 import { Button } from "./ui/button"
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group"
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -24,7 +18,7 @@ import axios from "axios"
 import { Textarea } from "./ui/textarea"
 
 
-export default function JobUpdateForm({ job, className, onSuccess }: React.ComponentProps<"form"> & { job?: Job; onSuccess?: () => void }) {
+export default function JobUpdateForm({ job, className, onSuccess, submitType }: React.ComponentProps<"form"> & { job?: Job; onSuccess?: () => void; submitType?: string }) {
 	const [openJobDeadline, setOpenJobDeadline] = useState(false)
 	const [jobDeadline, setJobDeadline] = useState<Date | undefined>(undefined)
 	const [openDateApplied, setOpenDateApplied] = useState(false)
@@ -52,6 +46,26 @@ export default function JobUpdateForm({ job, className, onSuccess }: React.Compo
         return `${year}-${month}-${day}T00:00:00`;
     };
 
+    const saveJobData = (jobPosition: string, companyName: string, jobURL: string, jobDeadline: Date | undefined, dateApplied: Date | undefined, notes: string) => {
+        axios.post(`http://localhost:8080/api/jobs/saveJob`, {
+            jobPosition: jobPosition,
+            companyName: companyName,
+            jobURL: jobURL,
+            deadline: formatDateForBackend(jobDeadline),
+            dateApplied: formatDateForBackend(dateApplied),
+            notes: notes,
+        })
+        .then(response => {
+            alert('Job saved successfully!');
+            if (onSuccess) {
+                onSuccess();
+            }
+        })
+        .catch(error => {
+            alert('Error saving job: ' + error.message);
+        });
+    }
+
     const updateJobData = (jobPosition: string, companyName: string, jobURL: string, jobDeadline: Date | undefined, dateApplied: Date | undefined, notes: string) => {
         axios.post(`http://localhost:8080/api/jobs/updateJob/${job?.jobId}`, {
             jobPosition: jobPosition,
@@ -73,8 +87,10 @@ export default function JobUpdateForm({ job, className, onSuccess }: React.Compo
     }
 
     useEffect(() => {
+        if (submitType === 'saveJob') return;
+        if (!job?.jobId) return;
         getJobData();
-    }, [])
+    }, [job?.jobId, submitType])
     
   return (
     <form >
@@ -203,9 +219,13 @@ export default function JobUpdateForm({ job, className, onSuccess }: React.Compo
                 const jobURL = (document.getElementById('jobURL') as HTMLInputElement).value;
                 const notes = (document.getElementById('notes') as HTMLTextAreaElement).value;
 
-                updateJobData(jobPosition, companyName, jobURL, jobDeadline, dateApplied, notes);
+                if(submitType === 'updateJob') {
+                    updateJobData(jobPosition, companyName, jobURL, jobDeadline, dateApplied, notes);
+                } else if (submitType === 'saveJob') {
+                    saveJobData(jobPosition, companyName, jobURL, jobDeadline, dateApplied, notes);
+                }
             }}
-        >Save changes</Button>
+        >Save</Button>
 
         </div>
     </form>
