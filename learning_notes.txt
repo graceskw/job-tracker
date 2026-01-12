@@ -1,0 +1,51 @@
+if no want commit MySQL pwd:
+- create application-local.properties 
+- edit config -> active profiles -> type local
+
+3 layers:
+controller: api endpoint
+service: logic
+repository: db 
+	- src/main/java/[project]/repository
+		- table itself
+	- src/main/java/[project]/entity
+		- schema of table
+		- type @Entity before class 
+		-> Hibernate: create table meows (id integer not null, name varchar(255) not null, primary key (id)) engine=InnoDB
+
+Lombok:
+- help write getter/setter, constructor
+@Data before class:
+- no need write required constructor (eg final), toString, getter/setter
+@Builder before class:
+- no need manually set each field when creating object
+@AllArgsConstructor:
+- auto create constructor that inc all field
+
+
+
+
+
+
+mac:
+mysql -u root -p 
+-> [macbook pwd]
+
+
+
+
+CRUD:
+create read update delete
+
+To avoid recursion in displaying bidirectional relationships:
+	- import:
+		import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+		import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+	- add this to entity class
+		@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "jobId") // to prevent infinite recursion in bidirectional relationships
+
+DATETIME DIFFERENCES ACROSS LANGUAGE
+javascript: toLocaleDateString -> with timezone
+	eg 2025-12-10T15:32:59.766Z
+java: LocalDateTime -> withOUT timezone 
+	eg 2025-12-10T15:32:59.766
