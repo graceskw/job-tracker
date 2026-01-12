@@ -19,12 +19,12 @@ public class JobService {
 
     public JobEntity saveJob(JobDTO jobRequest) {
         JobEntity savedJob = new JobEntity();
-        savedJob.setJobPosition(jobRequest.getJobPosition());
-        savedJob.setCompanyName(jobRequest.getCompanyName());
+        savedJob.setJobPosition(jobRequest.getJobPosition().trim());
+        savedJob.setCompanyName(jobRequest.getCompanyName().trim());
         savedJob.setDeadline(java.time.LocalDateTime.parse(jobRequest.getDeadline()));
-        savedJob.setJobURL(jobRequest.getJobURL());
+        savedJob.setJobURL(jobRequest.getJobURL().trim());
         if (jobRequest.getJobDescription() != null) {
-            savedJob.setJobDescription(jobRequest.getJobDescription());
+            savedJob.setJobDescription(jobRequest.getJobDescription().trim());
         }
         if (jobRequest.getJobStatus() != null || !jobRequest.getJobStatus().isBlank()) {
         savedJob.setJobStatus(JobStatus.valueOf(jobRequest.getJobStatus().trim()));
@@ -61,10 +61,10 @@ public class JobService {
     }
 
     public JobEntity updateJob(JobDTO jobRequest, JobEntity existingJob) {
-        existingJob.setJobPosition(jobRequest.getJobPosition());
-        existingJob.setCompanyName(jobRequest.getCompanyName());
+        existingJob.setJobPosition(jobRequest.getJobPosition().trim());
+        existingJob.setCompanyName(jobRequest.getCompanyName().trim());
         existingJob.setDeadline(java.time.LocalDateTime.parse(jobRequest.getDeadline()));
-        existingJob.setJobURL(jobRequest.getJobURL());
+        existingJob.setJobURL(jobRequest.getJobURL().trim());
         if (jobRequest.getJobStatus() != null) {
             existingJob.setJobStatus(JobStatus.valueOf(jobRequest.getJobStatus()));
         }
