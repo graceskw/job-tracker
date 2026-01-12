@@ -38,7 +38,8 @@ import { useEffect, useState } from "react"
 import axios, { all, AxiosResponse } from 'axios';
 import { Job } from "@/components/jobInterface"
 import JobUpdateForm from "@/components/jobUpdateForm"
-import { Plus, RefreshCw } from "lucide-react"
+import { Plus, RefreshCw, Pencil, Trash } from "lucide-react"
+import { set } from "date-fns"
 
 
 
@@ -90,6 +91,7 @@ export default function jobPage() {
 
     const [openSaveJob, setOpenSaveJob] = useState(false)
     const [openUpdateJob, setOpenUpdateJob] = useState(false)
+    const [openDeleteJob, setOpenDeleteJob] = useState(false)
 
     // const isDesktop = useMediaQuery("(min-width: 768px)")
 
@@ -113,7 +115,7 @@ export default function jobPage() {
 
 							<Dialog open={openSaveJob} onOpenChange={setOpenSaveJob}>
 								<DialogTrigger asChild>
-								<Button><Plus /></Button>
+								<Button><Plus /> Save new Job</Button>
 								</DialogTrigger>
 								<DialogContent className="sm:max-w-[425px]">
 								<DialogHeader>
@@ -183,34 +185,70 @@ export default function jobPage() {
 
                         <Dialog open={openUpdateJob} onOpenChange={setOpenUpdateJob}>
                             <DialogTrigger asChild>
-                            <Button>Edit Job Info</Button>
+                            	<Button><Pencil className="mr-2 h-4 w-4" /> Edit Job Info</Button>
                             </DialogTrigger>
 							<DialogContent className="sm:max-w-[425px]">
-							<DialogHeader>
-								<DialogTitle>Edit Job Info</DialogTitle>
+								<DialogHeader>
+									<DialogTitle>Edit Job Info</DialogTitle>
 
-							</DialogHeader>
-							<JobUpdateForm 
-								job={jobData} 
-								onSuccess={() => {
-									setOpenUpdateJob(false);
-									getAllJobs();
-									if (jobData?.jobId) {
-										axios.get<Job>(`http://localhost:8080/api/jobs/${jobData.jobId}`)
-											.then(response => setJobData(response.data))
-											.catch(error => console.error('Error refetching job:', error));
-									}
-								}}
-								submitType="updateJob"
-							/>
+								</DialogHeader>
+								<JobUpdateForm 
+									job={jobData} 
+									onSuccess={() => {
+										setOpenUpdateJob(false);
+										getAllJobs();
+										if (jobData?.jobId) {
+											axios.get<Job>(`http://localhost:8080/api/jobs/${jobData.jobId}`)
+												.then(response => setJobData(response.data))
+												.catch(error => console.error('Error refetching job:', error));
+										}
+									}}
+									submitType="updateJob"
+								/>
 							{/* <JobUpdateForm jobId={jobData?.jobId} /> */}
 							</DialogContent>
                         </Dialog>
 
-                        
-                        <Button className="mb-2x inline-block rounded-lg bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 max-h-10 hover:bg-green-200">
+                        <Dialog open={openDeleteJob} onOpenChange={setOpenDeleteJob}>
+							<DialogTrigger asChild>
+								<Button className="bg-red-600 hover:bg-red-700 text-white"><Trash className="mr-2 h-4 w-4" /> Delete Job</Button>
+							</DialogTrigger>
+							<DialogContent className="sm:max-w-[425px]">
+							<DialogHeader>
+								<DialogTitle>Delete Job</DialogTitle>
+								<DialogDescription>
+									Are you sure you want to delete this job? 
+									This action cannot be undone.
+								</DialogDescription>
+							</DialogHeader>
+								<div className="flex justify-end mt-4">
+									<Button
+										variant="destructive"
+										onClick={() => {
+											axios.delete(`http://localhost:8080/api/jobs/${jobData?.jobId}`)
+											.then(response => {
+												alert('Job deleted successfully!');
+												setOpenUpdateJob(false);
+												getAllJobs();
+												setJobData(undefined);
+												setOpenDeleteJob(false);
+											})
+											.catch(error => {
+												alert('Error deleting job: ' + error.message);
+											});
+										}}
+									>
+										Delete
+									</Button>
+								</div>
+							</DialogContent>
+						</Dialog>
+					
+
+
+                        {/* <Button className="mb-2x inline-block rounded-lg bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 max-h-10 hover:bg-green-200">
                             {jobData?.jobStatus}
-                        </Button>
+                        </Button> */}
                     </div>
 
 
@@ -228,7 +266,7 @@ export default function jobPage() {
 
                             <TabsContent value="stages">
                                 <Button className="rounded-lg bg-green-500 px-2 py-2 text-white hover:bg-green-600">
-                                    + Add stage
+                                   	<Plus /> Add stage
                                 </Button>
 
                                 <Table>

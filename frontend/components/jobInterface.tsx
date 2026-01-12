@@ -7,8 +7,8 @@ export interface Job {
   jobURL: string
   jobStatus: string | null
   jobDescription: string
-  notes: string | ""
-  dateApplied: Date | null
+  notes: string
+  dateApplied: Date
   onlineTests: OnlineTest[]
 }
 

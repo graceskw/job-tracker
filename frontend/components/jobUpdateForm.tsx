@@ -24,12 +24,19 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
 	const [openDateApplied, setOpenDateApplied] = useState(false)
 	const [dateApplied, setDateApplied] = useState<Date | undefined>(undefined)
     const [jobData, setJobData] = useState<Job | null>(null);
+    const [jobPosition, setJobPosition] = useState('');
+    const [companyName, setCompanyName] = useState('');
+    const [jobURL, setJobURL] = useState('');
+    const [notes, setNotes] = useState('');
 
     const getJobData = () => {
         axios.get<Job>(`http://localhost:8080/api/jobs/${job?.jobId}`)
         .then(response => {
             setJobData(response.data);
-            // alert('All jobs data: ' + JSON.stringify(response.data));
+            setJobPosition(response.data.jobPosition);
+            setCompanyName(response.data.companyName);
+            setJobURL(response.data.jobURL);
+            setNotes(response.data.notes);
             setJobDeadline(response.data.deadline ? new Date(response.data.deadline) : undefined);
             setDateApplied(response.data.dateApplied ? new Date(response.data.dateApplied) : undefined);
         })
@@ -52,6 +59,8 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
             companyName: companyName,
             jobURL: jobURL,
             deadline: formatDateForBackend(jobDeadline),
+            // dateApplied: "123",
+            // dateApplied: dateApplied,
             dateApplied: formatDateForBackend(dateApplied),
             notes: notes,
         })
@@ -87,7 +96,16 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
     }
 
     useEffect(() => {
-        if (submitType === 'saveJob') return;
+        if (submitType === 'saveJob') {
+            // For new job creation, start with empty values
+            setJobPosition('');
+            setCompanyName('');
+            setJobURL('');
+            setNotes('');
+            setJobDeadline(undefined);
+            setDateApplied(undefined);
+            return;
+        }
         if (!job?.jobId) return;
         getJobData();
     }, [job?.jobId, submitType])
@@ -100,7 +118,8 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
                 <Input
                     id="jobPosition"
                     className="col-span-2 h-8"
-                    defaultValue={jobData?.jobPosition}
+                    value={jobPosition}
+                    onChange={(e) => setJobPosition(e.target.value)}
                 />
             </div>
 
@@ -109,7 +128,8 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
                 <Input
                     id="jobCompany"
                     className="col-span-2 h-8"
-                    defaultValue={jobData?.companyName}
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
                 />
             </div>
 
@@ -118,7 +138,8 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
                 <Input
                     id="jobURL"
                     className="col-span-2 h-8"
-                    defaultValue={jobData?.jobURL}
+                    value={jobURL}
+                    onChange={(e) => setJobURL(e.target.value)}
                 />
             </div>
 
@@ -206,7 +227,8 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
                     <Textarea
                         id="notes"
                         className="h-24"
-                        defaultValue={jobData?.notes}
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
                     />
                 </div>
             </div>
@@ -214,11 +236,6 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
         <Button type="submit"
             onClick={(e) => {
                 e.preventDefault();
-                const jobPosition = (document.getElementById('jobPosition') as HTMLInputElement).value;
-                const companyName = (document.getElementById('jobCompany') as HTMLInputElement).value;
-                const jobURL = (document.getElementById('jobURL') as HTMLInputElement).value;
-                const notes = (document.getElementById('notes') as HTMLTextAreaElement).value;
-
                 if(submitType === 'updateJob') {
                     updateJobData(jobPosition, companyName, jobURL, jobDeadline, dateApplied, notes);
                 } else if (submitType === 'saveJob') {

@@ -23,7 +23,18 @@ public class JobService {
         savedJob.setCompanyName(jobRequest.getCompanyName());
         savedJob.setDeadline(java.time.LocalDateTime.parse(jobRequest.getDeadline()));
         savedJob.setJobURL(jobRequest.getJobURL());
-        savedJob.setJobDescription(jobRequest.getJobDescription());
+        if (jobRequest.getJobDescription() != null) {
+            savedJob.setJobDescription(jobRequest.getJobDescription());
+        }
+        if (jobRequest.getJobStatus() != null) {
+        savedJob.setJobStatus(JobStatus.valueOf(jobRequest.getJobStatus()));
+        }   
+        if (jobRequest.getNotes() != null) {
+            savedJob.setNotes(jobRequest.getNotes());
+        }
+        if (jobRequest.getDateApplied() != null) {
+            savedJob.setDateApplied(java.time.LocalDateTime.parse(jobRequest.getDateApplied()));
+        }
 
         jobRepository.save(savedJob);
         log.info("Job created successfully with ID: {}", savedJob.getJobId());
