@@ -5,17 +5,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { Calendar } from "./ui/calendar"
 import { ChevronDownIcon } from "lucide-react"
 import { Button } from "./ui/button"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 
 import { Job } from "@/components/jobInterface"
 import axios from "axios"
 import { Textarea } from "./ui/textarea"
+import { join } from "path"
 
 
 export default function JobUpdateForm({ job, className, onSuccess, submitType }: React.ComponentProps<"form"> & { job?: Job; onSuccess?: () => void; submitType?: string }) {
@@ -23,11 +17,13 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
 	const [jobDeadline, setJobDeadline] = useState<Date | undefined>(undefined)
 	const [openDateApplied, setOpenDateApplied] = useState(false)
 	const [dateApplied, setDateApplied] = useState<Date | undefined>(undefined)
+
     const [jobData, setJobData] = useState<Job | null>(null);
     const [jobPosition, setJobPosition] = useState('');
     const [companyName, setCompanyName] = useState('');
     const [jobURL, setJobURL] = useState('');
     const [notes, setNotes] = useState('');
+    const [jobStatus, setJobStatus] = useState('');
 
     const getJobData = () => {
         axios.get<Job>(`http://localhost:8080/api/jobs/${job?.jobId}`)
@@ -53,7 +49,7 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
         return `${year}-${month}-${day}T00:00:00`;
     };
 
-    const saveJobData = (jobPosition: string, companyName: string, jobURL: string, jobDeadline: Date | undefined, dateApplied: Date | undefined, notes: string) => {
+    const saveJobData = (jobPosition: string, companyName: string, jobURL: string, jobDeadline: Date | undefined, dateApplied: Date | undefined, notes: string, jobStatus: string) => {
         axios.post(`http://localhost:8080/api/jobs/saveJob`, {
             jobPosition: jobPosition,
             companyName: companyName,
@@ -63,6 +59,7 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
             // dateApplied: dateApplied,
             dateApplied: formatDateForBackend(dateApplied),
             notes: notes,
+            jobStatus: jobStatus,
         })
         .then(response => {
             alert('Job saved successfully!');
@@ -75,7 +72,7 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
         });
     }
 
-    const updateJobData = (jobPosition: string, companyName: string, jobURL: string, jobDeadline: Date | undefined, dateApplied: Date | undefined, notes: string) => {
+    const updateJobData = (jobPosition: string, companyName: string, jobURL: string, jobDeadline: Date | undefined, dateApplied: Date | undefined, notes: string, jobStatus: string) => {
         axios.post(`http://localhost:8080/api/jobs/updateJob/${job?.jobId}`, {
             jobPosition: jobPosition,
             companyName: companyName,
@@ -83,6 +80,7 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
             deadline: formatDateForBackend(jobDeadline),
             dateApplied: formatDateForBackend(dateApplied),
             notes: notes,
+            jobStatus: jobStatus,
         })
         .then(response => {
             alert('Job updated successfully!');
@@ -236,10 +234,14 @@ export default function JobUpdateForm({ job, className, onSuccess, submitType }:
         <Button type="submit"
             onClick={(e) => {
                 e.preventDefault();
+
+                // cant use setState bcuz async, will not update in time for api call 
+                const currentJobStatus = dateApplied != undefined ? "APPLIED" : "INTERESTED";
+
                 if(submitType === 'updateJob') {
-                    updateJobData(jobPosition, companyName, jobURL, jobDeadline, dateApplied, notes);
+                    updateJobData(jobPosition, companyName, jobURL, jobDeadline, dateApplied, notes, currentJobStatus);
                 } else if (submitType === 'saveJob') {
-                    saveJobData(jobPosition, companyName, jobURL, jobDeadline, dateApplied, notes);
+                    saveJobData(jobPosition, companyName, jobURL, jobDeadline, dateApplied, notes, currentJobStatus);
                 }
             }}
         >Save</Button>

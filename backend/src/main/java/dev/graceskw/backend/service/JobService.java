@@ -26,8 +26,8 @@ public class JobService {
         if (jobRequest.getJobDescription() != null) {
             savedJob.setJobDescription(jobRequest.getJobDescription());
         }
-        if (jobRequest.getJobStatus() != null) {
-        savedJob.setJobStatus(JobStatus.valueOf(jobRequest.getJobStatus()));
+        if (jobRequest.getJobStatus() != null || !jobRequest.getJobStatus().isBlank()) {
+        savedJob.setJobStatus(JobStatus.valueOf(jobRequest.getJobStatus().trim()));
         }   
         if (jobRequest.getNotes() != null) {
             savedJob.setNotes(jobRequest.getNotes());

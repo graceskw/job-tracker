@@ -243,12 +243,10 @@ export default function jobPage() {
 								</div>
 							</DialogContent>
 						</Dialog>
-					
 
-
-                        {/* <Button className="mb-2x inline-block rounded-lg bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 max-h-10 hover:bg-green-200">
+                        <Button className="mb-2x inline-block rounded-lg bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 max-h-10 hover:bg-green-200">
                             {jobData?.jobStatus}
-                        </Button> */}
+                        </Button>
                     </div>
 
 
