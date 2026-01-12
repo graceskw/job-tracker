@@ -325,10 +325,6 @@ export default function jobPage() {
 				</span>
 			  </div>
 
-				<div className="mb-4 text-sm text-gray-500">
-				  Date Applied: {jobData?.dateApplied ? jobData.dateApplied.toString().split("T")[0] : "N/A"}
-				</div>
-
               <div className="prose prose-zinc dark:prose-invert">
                 <Tabs defaultValue="stages">
                   {/* <Tabs defaultValue="stages" className="w-[400px]"> */}
