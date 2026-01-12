@@ -212,6 +212,12 @@ export default function jobPage() {
         <ResizableHandle withHandle />
 
         <ResizablePanel defaultSize={75}>
+			<Activity mode={jobData ? "hidden" : "visible"}>
+			<div className="flex h-full items-center justify-center p-6">
+				<span className="font-semibold">Select a job to view details</span>
+			</div>
+		</Activity>
+
           <Activity mode={jobData ? "visible" : "hidden"}>
             {/* <Activity mode={"hidden"}> */}
             <div className="flex-col h-full items-center justify-center p-6">
@@ -308,6 +314,20 @@ export default function jobPage() {
                   {jobData?.jobStatus}
                 </Button>
               </div>
+
+			  <div className="mt-6 mb-6 text-sm flex flex-row gap-4 ">
+				<span className="mb-4 text-sm text-red-500">
+				Application Deadline: { jobData?.deadline ? jobData.deadline.toString().split("T")[0] : "N/A"}
+				</span>
+
+				<span className="mb-4 text-sm text-gray-500">
+				  Date Applied: {jobData?.dateApplied ? jobData.dateApplied.toString().split("T")[0] : "N/A"}
+				</span>
+			  </div>
+
+				<div className="mb-4 text-sm text-gray-500">
+				  Date Applied: {jobData?.dateApplied ? jobData.dateApplied.toString().split("T")[0] : "N/A"}
+				</div>
 
               <div className="prose prose-zinc dark:prose-invert">
                 <Tabs defaultValue="stages">
