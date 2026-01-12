@@ -14,6 +14,9 @@ public class OnlineTestDTO {
     private Long jobId;
     private String dateReceived;
     private String deadline;
+    private String dateCompleted;
+    private String notes;
+    private String createdAt;
     private List<OnlineTestType> onlineTestTypes;
 
     public OnlineTestDTO() {

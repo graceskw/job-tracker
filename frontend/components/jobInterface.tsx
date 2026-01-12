@@ -7,7 +7,7 @@ export interface Job {
   jobURL: string
   jobStatus: string | null
   jobDescription: string
-  notes: string | null
+  notes: string | ""
   dateApplied: Date | null
   onlineTests: OnlineTest[]
 }
@@ -18,7 +18,7 @@ export interface OnlineTest {
   dateReceived: Date
   deadline: Date
   dateCompleted: Date | null
-  notes: string | null
+  notes: string | ""
   createdAt: Date | null
   onlineTestStatus: string | null
   onlineTestTypes: string[]

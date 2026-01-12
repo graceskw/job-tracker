@@ -1,6 +1,15 @@
 'use client'
 
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
+import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
@@ -23,9 +32,15 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
+import { Button } from "@/components/ui/button"
+
 import { useEffect, useState } from "react"
 import axios, { all, AxiosResponse } from 'axios';
-import { Job } from "@/components/job"
+import { Job } from "@/components/jobInterface"
+import JobUpdateForm from "@/components/jobUpdateForm"
+import { Plus, RefreshCw } from "lucide-react"
+
+
 
 // tell axios what type of data to expect back
 const fetchUser = async (id: number): Promise<Job> => {
@@ -41,7 +56,7 @@ const fetchUser = async (id: number): Promise<Job> => {
 //   console.log(user.name); // Type-safe access
 // });
 
-export default function ResizableHandleDemo() {
+export default function jobPage() {
     // // [] bcuz want to run only once when component loads
     // useEffect(() => {
     // //    alert("This is a demo page. Functionality coming soon!") 
@@ -73,6 +88,10 @@ export default function ResizableHandleDemo() {
         getAllJobs();
     }, [])
 
+    const [open, setOpen] = useState(false)
+
+    // const isDesktop = useMediaQuery("(min-width: 768px)")
+
     return (
         <div className="flex min-h-screen min-w-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
             <ResizablePanelGroup
@@ -81,59 +100,44 @@ export default function ResizableHandleDemo() {
             >
                 <ResizablePanel defaultSize={25}>
                     <div className="h-full items-center justify-center p-6">
+						<div className="flex flex-row justify-between mb-4">
+							<span className="font-semibold">job list</span>
+							<Button
+								onClick={getAllJobs}
+							>
+								<RefreshCw className="size-4" />
+							</Button>
+							<Button
+								onClick={getAllJobs}
+							>
+								<Plus className="size-4" />
+							</Button>
+						</div>
 
-                        {/* <input
-                            type="number"
-                            placeholder="Search jobs..."
-                            className="mb-4 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
-                            value={jobId}
-                            onChange={(e) => setJobId(Number(e.target.value))}
-                        /> {jobId}
-
-                        <button
-                            className="mb-4 w-full rounded-md bg-blue-500 px-3 py-2 text-white hover:bg-blue-600"
-                            onClick={() => {
-                                axios.get(`http://localhost:8080/api/jobs/${jobId}`)
-                                .then(response => {
-                                    setJobData(response.data);
-                                    alert('Job data: ' + JSON.stringify(response.data));
-                                })
-                                .catch(error => {
-                                    alert('Error fetching job data: ' + error.message);
-                                });
-                            }}
-                        >
-                            Fetch Job Data
-                        </button> */}
-
-                    {/* <span className="font-semibold">job list</span> */}
-                    <span
-                        onClick={getAllJobs}
-                    >🔄</span>
-                    <table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Company</TableHead>
-                                
-                                {/* <TableHead>Position</TableHead>
-                                <TableHead className="text-right">Status</TableHead> */}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {Object.values(allJobs).map((job) => (
-                            <TableRow key={job.jobId}>
-                                <TableCell className="font-medium"
-                                    onClick={() => {
-                                        setJobData(job);
-                                        // alert('Job data: ' + JSON.stringify(job));
-                                    }}
-                                >{job.companyName}</TableCell>
-                                {/* <TableCell>{job.position}</TableCell>
-                                <TableCell className="text-right">{job.currentStage}</TableCell> */}
-                            </TableRow>
-                            ))}
-                        </TableBody>
-                    </table>
+						<table>
+							<TableHeader>
+								<TableRow>
+									<TableHead>Company</TableHead>
+									
+									{/* <TableHead>Position</TableHead>
+									<TableHead className="text-right">Status</TableHead> */}
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{Object.values(allJobs).map((job) => (
+								<TableRow key={job.jobId}>
+									<TableCell className="font-medium"
+										onClick={() => {
+											setJobData(job);
+											// alert('Job data: ' + JSON.stringify(job));
+										}}
+									>{job.companyName}</TableCell>
+									{/* <TableCell>{job.position}</TableCell>
+									<TableCell className="text-right">{job.currentStage}</TableCell> */}
+								</TableRow>
+								))}
+							</TableBody>
+						</table>
                     </div>
                 </ResizablePanel>
 
@@ -151,10 +155,24 @@ export default function ResizableHandleDemo() {
                             </a>
                             {/* ? == if not null sin access */}
                         </div>
+
+                        <Dialog open={open} onOpenChange={setOpen}>
+                            <DialogTrigger asChild>
+                            <Button>Edit Job Info</Button>
+                            </DialogTrigger>
+							<DialogContent className="sm:max-w-[425px]">
+							<DialogHeader>
+								<DialogTitle>Edit Job Info</DialogTitle>
+
+							</DialogHeader>
+							<JobUpdateForm jobId={jobData?.jobId} />
+							</DialogContent>
+                        </Dialog>
+
                         
-                        <button className="mb-2x inline-block rounded-lg bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 max-h-10 hover:bg-green-200">
+                        <Button className="mb-2x inline-block rounded-lg bg-green-100 px-3 py-1 text-sm font-semibold text-green-800 max-h-10 hover:bg-green-200">
                             {jobData?.jobStatus}
-                        </button>
+                        </Button>
                     </div>
 
 
@@ -171,9 +189,9 @@ export default function ResizableHandleDemo() {
                             </TabsContent>
 
                             <TabsContent value="stages">
-                                <button className="rounded-lg bg-green-500 px-2 py-2 text-white hover:bg-green-600">
+                                <Button className="rounded-lg bg-green-500 px-2 py-2 text-white hover:bg-green-600">
                                     + Add stage
-                                </button>
+                                </Button>
 
                                 <Table>
                                     <TableCaption>Application stages</TableCaption>
@@ -209,3 +227,4 @@ export default function ResizableHandleDemo() {
         </div>
     )
 }
+

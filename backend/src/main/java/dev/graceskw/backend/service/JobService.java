@@ -5,8 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dev.graceskw.backend.dto.JobRequestDTO;
+import dev.graceskw.backend.dto.JobDTO;
 import dev.graceskw.backend.entity.JobEntity;
+import dev.graceskw.backend.enums.JobStatus;
 import dev.graceskw.backend.repository.JobRepository;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +17,7 @@ public class JobService {
     @Autowired
     private JobRepository jobRepository;
 
-    public JobEntity saveJob(JobRequestDTO jobRequest) {
+    public JobEntity saveJob(JobDTO jobRequest) {
         JobEntity savedJob = new JobEntity();
         savedJob.setJobPosition(jobRequest.getJobPosition());
         savedJob.setCompanyName(jobRequest.getCompanyName());
@@ -46,5 +47,28 @@ public class JobService {
 
     public List<JobEntity> getAllJobs() {
         return jobRepository.findAll();
+    }
+
+    public JobEntity updateJob(JobDTO jobRequest, JobEntity existingJob) {
+        existingJob.setJobPosition(jobRequest.getJobPosition());
+        existingJob.setCompanyName(jobRequest.getCompanyName());
+        existingJob.setDeadline(java.time.LocalDateTime.parse(jobRequest.getDeadline()));
+        existingJob.setJobURL(jobRequest.getJobURL());
+        if (jobRequest.getJobStatus() != null) {
+            existingJob.setJobStatus(JobStatus.valueOf(jobRequest.getJobStatus()));
+        }
+        if (jobRequest.getJobDescription() != null) {
+            existingJob.setJobDescription(jobRequest.getJobDescription());
+        }
+        if (jobRequest.getNotes() != null) {
+            existingJob.setNotes(jobRequest.getNotes());
+        }
+        if (jobRequest.getDateApplied() != null) {
+            existingJob.setDateApplied(java.time.LocalDateTime.parse(jobRequest.getDateApplied()));
+        }
+
+        jobRepository.save(existingJob);
+        log.info("Job updated successfully with ID: {}", existingJob.getJobId());
+        return existingJob;
     }
 }

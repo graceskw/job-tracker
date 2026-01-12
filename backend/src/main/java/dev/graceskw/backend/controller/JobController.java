@@ -4,22 +4,21 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.graceskw.backend.dto.JobRequestDTO;
+import dev.graceskw.backend.dto.JobDTO;
 import dev.graceskw.backend.entity.JobEntity;
 import dev.graceskw.backend.repository.JobRepository;
 import dev.graceskw.backend.service.JobService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -35,7 +34,7 @@ public class JobController {
 
     @PostMapping("/saveJob")
     @Transactional
-    public ResponseEntity<JobEntity> createJob(@Valid @RequestBody JobRequestDTO jobRequest) {
+    public ResponseEntity<JobEntity> createJob(@Valid @RequestBody JobDTO jobRequest) {
         log.info("Received job creation request: {}", jobRequest);
         if(jobRequest == null) {
             log.error("Job request is null");
@@ -90,6 +89,51 @@ public class JobController {
 
         return jobs;
     }
+
+    @PostMapping("/updateJob/{id}")
+    public ResponseEntity<JobEntity> postMethodName(@RequestBody JobDTO jobRequest, @PathVariable Long id) {
+        if(jobRequest == null) {
+            log.error("Job request is null");
+            return ResponseEntity.badRequest().build();
+        }
+
+        if(id == null) {
+            log.error("Job request is missing job ID");
+            return ResponseEntity.badRequest().build();
+        }
+
+        if(jobRequest.getJobPosition() == null || jobRequest.getJobPosition().isBlank()) {
+            log.error("Missing required job position");
+            return ResponseEntity.badRequest().build();
+        }
+
+        if(jobRequest.getCompanyName() == null || jobRequest.getCompanyName().isBlank()) {
+            log.error("Missing required job company name");
+            return ResponseEntity.badRequest().build();
+        }
+        
+        if(jobRequest.getDeadline() == null || jobRequest.getDeadline().isBlank()) {
+            log.error("Missing required job deadline");
+            return ResponseEntity.badRequest().build();
+        }
+
+        if(jobRequest.getJobURL() == null || jobRequest.getJobURL().isBlank()) {
+            log.error("Missing required job URL");
+            return ResponseEntity.badRequest().build();
+        }
+
+        JobEntity jobToUpdate = jobRepository.findByJobId(id).orElse(null);
+        
+        if (jobToUpdate == null) {
+            log.error("Job not found with ID: {}", id);
+            return ResponseEntity.notFound().build();
+        }
+        
+       jobToUpdate = jobService.updateJob(jobRequest, jobToUpdate);
+        
+        return ResponseEntity.ok(jobToUpdate);
+    }
+    
     
 
     // @PostMapping("/updateJobStatus/")
