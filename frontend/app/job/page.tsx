@@ -71,7 +71,7 @@ export default function jobPage() {
     const [allJobs, setAllJobs] = useState<Job[]>([]);
     const [jobId, setJobId] = useState(1);
     // state can be Job or null
-    const [jobData, setJobData] = useState<Job | null>(null);
+    const [jobData, setJobData] = useState<Job>();
 
     const getAllJobs = () => {
         axios.get<Job[]>(`http://localhost:8080/api/jobs/allJobs`)
@@ -88,7 +88,7 @@ export default function jobPage() {
         getAllJobs();
     }, [])
 
-    const [open, setOpen] = useState(false)
+    const [openUpdateJob, setOpenUpdateJob] = useState(false)
 
     // const isDesktop = useMediaQuery("(min-width: 768px)")
 
@@ -107,11 +107,23 @@ export default function jobPage() {
 							>
 								<RefreshCw className="size-4" />
 							</Button>
-							<Button
-								onClick={getAllJobs}
-							>
-								<Plus className="size-4" />
-							</Button>
+
+
+
+							{/* <Dialog open={openUpdateJob} onOpenChange={setOpenUpdateJob}>
+								<DialogTrigger asChild>
+									<Button>
+										<Plus className="size-4" />
+									</Button>								
+								</DialogTrigger>
+								<DialogContent className="sm:max-w-[425px]">
+									<DialogHeader>
+										<DialogTitle>Edit Job Info</DialogTitle>
+									</DialogHeader>
+									<JobUpdateForm jobId={jobData?.jobId} />
+								</DialogContent>
+								</Dialog> */}
+							
 						</div>
 
 						<table>
@@ -156,7 +168,7 @@ export default function jobPage() {
                             {/* ? == if not null sin access */}
                         </div>
 
-                        <Dialog open={open} onOpenChange={setOpen}>
+                        <Dialog open={openUpdateJob} onOpenChange={setOpenUpdateJob}>
                             <DialogTrigger asChild>
                             <Button>Edit Job Info</Button>
                             </DialogTrigger>
@@ -165,7 +177,19 @@ export default function jobPage() {
 								<DialogTitle>Edit Job Info</DialogTitle>
 
 							</DialogHeader>
-							<JobUpdateForm jobId={jobData?.jobId} />
+							<JobUpdateForm 
+								job={jobData} 
+								onSuccess={() => {
+									setOpenUpdateJob(false);
+									getAllJobs();
+									if (jobData?.jobId) {
+										axios.get<Job>(`http://localhost:8080/api/jobs/${jobData.jobId}`)
+											.then(response => setJobData(response.data))
+											.catch(error => console.error('Error refetching job:', error));
+									}
+								}}
+							/>
+							{/* <JobUpdateForm jobId={jobData?.jobId} /> */}
 							</DialogContent>
                         </Dialog>
 

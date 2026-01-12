@@ -21,16 +21,18 @@ import {
 
 import { Job } from "@/components/jobInterface"
 import axios from "axios"
+import { Textarea } from "./ui/textarea"
 
 
-export default function JobUpdateForm({ jobId, className }: React.ComponentProps<"form"> & { jobId?: number }) {
+export default function JobUpdateForm({ job, className, onSuccess }: React.ComponentProps<"form"> & { job?: Job; onSuccess?: () => void }) {
 	const [openJobDeadline, setOpenJobDeadline] = useState(false)
 	const [jobDeadline, setJobDeadline] = useState<Date | undefined>(undefined)
 	const [openDateApplied, setOpenDateApplied] = useState(false)
 	const [dateApplied, setDateApplied] = useState<Date | undefined>(undefined)
     const [jobData, setJobData] = useState<Job | null>(null);
+
     const getJobData = () => {
-        axios.get<Job>(`http://localhost:8080/api/jobs/${jobId}`)
+        axios.get<Job>(`http://localhost:8080/api/jobs/${job?.jobId}`)
         .then(response => {
             setJobData(response.data);
             // alert('All jobs data: ' + JSON.stringify(response.data));
@@ -50,17 +52,20 @@ export default function JobUpdateForm({ jobId, className }: React.ComponentProps
         return `${year}-${month}-${day}T00:00:00`;
     };
 
-    const updateJobData = () => {
-        axios.post(`http://localhost:8080/api/jobs/updateJob/${jobId}`, {
-            jobPosition: jobData?.jobPosition,
-            companyName: jobData?.companyName,
-            jobURL: jobData?.jobURL,
+    const updateJobData = (jobPosition: string, companyName: string, jobURL: string, jobDeadline: Date | undefined, dateApplied: Date | undefined, notes: string) => {
+        axios.post(`http://localhost:8080/api/jobs/updateJob/${job?.jobId}`, {
+            jobPosition: jobPosition,
+            companyName: companyName,
+            jobURL: jobURL,
             deadline: formatDateForBackend(jobDeadline),
             dateApplied: formatDateForBackend(dateApplied),
-            notes: jobData?.notes,
+            notes: notes,
         })
         .then(response => {
             alert('Job updated successfully!');
+            if (onSuccess) {
+                onSuccess();
+            }
         })
         .catch(error => {
             alert('Error updating job: ' + error.message);
@@ -95,7 +100,7 @@ export default function JobUpdateForm({ jobId, className }: React.ComponentProps
             <div className="grid grid-cols-3 items-center gap-4">
                 <Label htmlFor="jobURL">URL</Label>
                 <Input
-                    id="jobCompany"
+                    id="jobURL"
                     className="col-span-2 h-8"
                     defaultValue={jobData?.jobURL}
                 />
@@ -182,21 +187,23 @@ export default function JobUpdateForm({ jobId, className }: React.ComponentProps
         <div className="grid grid-cols-3 items-center gap-4">
                 <Label htmlFor="notes">Notes</Label>
                 <div className="col-span-2">
-                    <InputGroup>
-                        <InputGroupTextarea placeholder="Enter your message" defaultValue={jobData?.notes} />
-                        <InputGroupAddon align="block-end">
-                        <InputGroupText className="text-muted-foreground text-xs">
-                            120 characters left
-                        </InputGroupText>
-                        </InputGroupAddon>
-                    </InputGroup>
+                    <Textarea
+                        id="notes"
+                        className="h-24"
+                        defaultValue={jobData?.notes}
+                    />
                 </div>
             </div>
 
         <Button type="submit"
             onClick={(e) => {
                 e.preventDefault();
-                updateJobData();
+                const jobPosition = (document.getElementById('jobPosition') as HTMLInputElement).value;
+                const companyName = (document.getElementById('jobCompany') as HTMLInputElement).value;
+                const jobURL = (document.getElementById('jobURL') as HTMLInputElement).value;
+                const notes = (document.getElementById('notes') as HTMLTextAreaElement).value;
+
+                updateJobData(jobPosition, companyName, jobURL, jobDeadline, dateApplied, notes);
             }}
         >Save changes</Button>
 
